@@ -139,28 +139,31 @@ const deleteByElement = async function (req, res) {
 
     let check = await blogModel.find(data)
     if (!check) return res.status(404).send('Blog not exist')
+    console.log(check)
 
     // let checking = check.deleted
-    if(check.deleted===true) return res.send('blog not exist')
+    // if(check.deleted == true) {res.send('blog not exist')}
+    // else{res.send("ok")}
+
     
     // console.log(checking)
 
     // let checking = check.isPublished
-    if(check.isPublished == false) {
+    // if(check.isPublished == false) {
   
     //     console.log(checking)
         
         // if (Object.keys(data) == 0) return res.status(400).send({ status: false, msg: "not a vaild input" })
-        const deleteBYquery = await blogModel.findOneAndUpdate(  data , {deleted: true, deletedAt: new Date()} ,{ new : true })
+        const deleteBYquery = await blogModel.updateMany( {$and:[ data, {deleted : false},{isPublished : false} ]}, {$set:{deleted: true, deletedAt: new Date()} })
         console.log(deleteBYquery) 
  
         if (!deleteBYquery) return res.status(404).send({ status: false, msg: "blog not exist" })
         res.status(200).send({ status: true, msg: deleteBYquery })
     }
-     else {
-         res.status(201).send('blog published')
-     }
-    }
+    //  else {
+    //      res.status(201).send('blog published')
+    //  }
+    
 
 
     catch (error) {
