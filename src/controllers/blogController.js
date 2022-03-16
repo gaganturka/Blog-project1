@@ -71,7 +71,7 @@ const getblog = async function (req, res) {
         const data = req.query
 
 
-        const blogs = await blogModel.find({ data, isPublished: true, deleted: false }).populate("authorid")
+        const blogs = await blogModel.find( data).find({ isPublished: true, deleted: false }).populate("authorid")
         if (blogs.length == 0) return res.status(404).send({ status: false, msg: "No blogs Available." })
         res.status(200).send({ status: true, data: blogs });
     }
@@ -134,13 +134,32 @@ const deleteblog = async function (req, res) {
 
 
 const deleteByElement = async function (req, res) {
-
     try {
-        const data = req.query
-        if (Object.keys(data) == 0) return res.status(400).send({ status: false, msg: "not a vaild input" })
-        const deleteBYquery = await blogModel.find(data).updateMany({ deleted: true, deletedAt: new Date() }, { new: true })
+        let data = req.query
+
+    let check = await blogModel.find(data)
+    if (!check) return res.status(404).send('Blog not exist')
+
+    // let checking = check.deleted
+    if(check.deleted===true) return res.send('blog not exist')
+    
+    // console.log(checking)
+
+    // let checking = check.isPublished
+    if(check.isPublished == false) {
+  
+    //     console.log(checking)
+        
+        // if (Object.keys(data) == 0) return res.status(400).send({ status: false, msg: "not a vaild input" })
+        const deleteBYquery = await blogModel.findOneAndUpdate(  data , {deleted: true, deletedAt: new Date()} ,{ new : true })
+        console.log(deleteBYquery) 
+ 
         if (!deleteBYquery) return res.status(404).send({ status: false, msg: "blog not exist" })
         res.status(200).send({ status: true, msg: deleteBYquery })
+    }
+     else {
+         res.status(201).send('blog published')
+     }
     }
 
 

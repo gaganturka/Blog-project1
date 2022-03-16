@@ -47,7 +47,7 @@ Delete blog documents by category, authorid, tag name, subcategory name, unpubli
 If the blog document doesn't exist then return an HTTP status of 404 with a body like this
 
 
-Phase II
+Phase II 
 Add authentication and authroisation feature
 POST /login
 Allow an author to login with their email and password. On a successful login attempt return a JWT token contatining the authorId
