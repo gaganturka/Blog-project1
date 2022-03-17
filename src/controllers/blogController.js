@@ -155,7 +155,7 @@ const deleteByElement = async function (req, res) {
         
         // if (Object.keys(data) == 0) return res.status(400).send({ status: false, msg: "not a vaild input" })
         const deleteBYquery = await blogModel.updateMany( {$and:[ data, {deleted : false},{isPublished : false} ]}, {$set:{deleted: true, deletedAt: new Date()} })
-        console.log(deleteBYquery) 
+       if (deleteBYquery.modifiedCount == 0) return res.status(400).send('user already deleted')
  
         if (!deleteBYquery) return res.status(404).send({ status: false, msg: "blog not exist" })
         res.status(200).send({ status: true, msg: deleteBYquery })
